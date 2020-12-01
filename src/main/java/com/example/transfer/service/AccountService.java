@@ -8,13 +8,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 @Service
 public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
+    private ConcurrentMap<Integer, Integer> wallets = new ConcurrentHashMap<>();
+
     public List<Account> findAll() {
+
+        if(wallets!=null){
+            for (Integer key : wallets.keySet()) {
+                System.out.println(key + " : " + wallets.get(key));
+                accountRepository.save(new Account(key, wallets.get(key)));
+            }
+        }
+
         return accountRepository.findAll();
     }
 
@@ -28,7 +42,24 @@ public class AccountService {
             , Integer target
             , Integer point
     ) {
-        // TODO 任何方式實作都可以，不限於使用 JPA
+
+        // init
+        if(wallets.size()==0){
+            List<Account> list=findAll();
+            for(Account account:list){
+                wallets.put(account.getId(),account.getPoint());
+            }
+        }
+
+        Integer sourcePoint = wallets.get(source);
+        Integer targetPoint = wallets.get(target);
+
+        if(sourcePoint>0 && sourcePoint-point>=0){
+            wallets.merge(target, point, Integer::sum);
+            wallets.merge(source, 0-point, Integer::sum);
+        }
+
+
     }
 
     public AccountTransferResult transfer2(
@@ -45,4 +76,5 @@ public class AccountService {
                 , new AccountTransfer(target, targetBeforePoint, targetAfterPoint)
         );
     }
+
 }
