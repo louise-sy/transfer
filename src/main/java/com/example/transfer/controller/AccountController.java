@@ -151,8 +151,9 @@ public class AccountController {
                             , random.nextInt(AccountConfig.AccountCount) + 1
                             , random.nextInt(max) + minPoint
                     );
-                    if (!Objects.equals(result.getSource().getBefore() - result.getPoint(), result.getSource().getAfter())
-                            || !Objects.equals(result.getTarget().getBefore() + result.getPoint(), result.getTarget().getAfter())
+                    if (result.getStatus()
+                            && !(Objects.equals(result.getSource().getBefore() - result.getPoint(), result.getSource().getAfter())
+                                    && Objects.equals(result.getTarget().getBefore() + result.getPoint(), result.getTarget().getAfter()) )
                     ) {
                         throw new RuntimeException(String.format("交易結果異常：%s", result));
                     }

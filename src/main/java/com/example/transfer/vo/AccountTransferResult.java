@@ -8,6 +8,8 @@ import lombok.ToString;
 @Getter
 @AllArgsConstructor
 public class AccountTransferResult {
+    // 交易狀態
+    private Boolean status;
     // 交易點數
     private Integer point;
     // 轉出

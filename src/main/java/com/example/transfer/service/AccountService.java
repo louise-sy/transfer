@@ -40,7 +40,8 @@ public class AccountService {
         // TODO 任何方式實作都可以，不限於使用 JPA
 
         return new AccountTransferResult(
-                point
+                true
+                , point
                 , new AccountTransfer(source, sourceBeforePoint, sourceAfterPoint)
                 , new AccountTransfer(target, targetBeforePoint, targetAfterPoint)
         );
