@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.transfer.data.mapper.AccountMapper">
+
+
+
+<!--    <update id="out2" >-->
+<!--        UPDATE account SET point = @point:=point , point = @afterPoint := point-#{point}-->
+<!--        where id = #{id} and point-#{point} > 0;-->
+
+<!--    </update>-->
+
+    <select id="aout2" resultType="java.util.HashMap">
+        UPDATE account SET point = @afterPoint := (@point:=point)-#{point}
+        where id = #{id} and (@point:=@afterPoint:=point)>=#{point};
+        select @point, @afterPoint;
+    </select>
+
+
+</mapper>

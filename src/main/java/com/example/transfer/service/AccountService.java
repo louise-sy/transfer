@@ -1,36 +1,32 @@
 package com.example.transfer.service;
 
 import com.example.transfer.data.entity.Account;
-import com.example.transfer.data.repository.AccountRepository;
+import com.example.transfer.data.mapper.AccountMapper;
+
 import com.example.transfer.vo.AccountTransfer;
 import com.example.transfer.vo.AccountTransferResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.locks.ReentrantLock;
+
 
 @Service
 public class AccountService {
     @Autowired
-    private AccountRepository accountRepository;
+    private AccountMapper accountRepository;
 
-    private ConcurrentMap<Integer, Integer> wallets = new ConcurrentHashMap<>();
+    volatile ConcurrentHashMap<Integer,Boolean> lock = new ConcurrentHashMap();
 
     public List<Account> findAll() {
-
-        if(wallets!=null){
-            for (Integer key : wallets.keySet()) {
-                System.out.println(key + " : " + wallets.get(key));
-                accountRepository.save(new Account(key, wallets.get(key)));
-            }
-        }
-
-        return accountRepository.findAll();
+        return accountRepository.selectList(null);
     }
+
+
 
     /**
      * @param source 轉出
@@ -43,32 +39,28 @@ public class AccountService {
             , Integer point
     ) {
 
-        // init
-        if(wallets.size()==0){
-            List<Account> list=findAll();
-            for(Account account:list){
-                wallets.put(account.getId(),account.getPoint());
-            }
+        Account sourceAccount = accountRepository.selectById(source);
+        Account targetAccount = accountRepository.selectById(target);
+        if( accountRepository.inPoint(targetAccount.getId(), point) > 0){
+            accountRepository.outPoint(sourceAccount.getId(), point);
         }
-
-        Integer sourcePoint = wallets.get(source);
-        Integer targetPoint = wallets.get(target);
-
-        if(sourcePoint>0 && sourcePoint-point>=0){
-            wallets.merge(target, point, Integer::sum);
-            wallets.merge(source, 0-point, Integer::sum);
-        }
-
-
     }
 
+    @Transactional
     public AccountTransferResult transfer2(
             Integer source
             , Integer target
             , Integer point
     ) {
         int sourceBeforePoint = 0, sourceAfterPoint = 0, targetBeforePoint = 0, targetAfterPoint = 0;
-        // TODO 任何方式實作都可以，不限於使用 JPA
+
+        Account sourceAccount = accountRepository.selectById(source);
+        Account targetAccount = accountRepository.selectById(target);
+
+//        Integer map =accountRepository.out2(source,point);
+        HashMap<String,Object> a2 = accountRepository.aout2();
+
+//        this.transfer(source,target,point);
 
         return new AccountTransferResult(
                 point
@@ -76,5 +68,8 @@ public class AccountService {
                 , new AccountTransfer(target, targetBeforePoint, targetAfterPoint)
         );
     }
+
+
+
 
 }

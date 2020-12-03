@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS Account;
+
+CREATE TABLE Account
+(
+	id BIGINT(20) NOT NULL COMMENT 'Primary key',
+	point INT(11) NULL DEFAULT NULL COMMENT 'age',
+	version BIGINT(20) NOT NULL COMMENT 'version',
+	PRIMARY KEY (id)
+);
