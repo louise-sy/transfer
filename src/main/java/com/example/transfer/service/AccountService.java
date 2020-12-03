@@ -2,25 +2,21 @@ package com.example.transfer.service;
 
 import com.example.transfer.data.entity.Account;
 import com.example.transfer.data.mapper.AccountMapper;
-
+import com.example.transfer.data.mapper.TradeResult;
 import com.example.transfer.vo.AccountTransfer;
 import com.example.transfer.vo.AccountTransferResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantLock;
 
 
 @Service
 public class AccountService {
     @Autowired
     private AccountMapper accountRepository;
-
-    volatile ConcurrentHashMap<Integer,Boolean> lock = new ConcurrentHashMap();
 
     public List<Account> findAll() {
         return accountRepository.selectList(null);
@@ -46,7 +42,7 @@ public class AccountService {
         }
     }
 
-    @Transactional
+
     public AccountTransferResult transfer2(
             Integer source
             , Integer target
@@ -54,18 +50,32 @@ public class AccountService {
     ) {
         int sourceBeforePoint = 0, sourceAfterPoint = 0, targetBeforePoint = 0, targetAfterPoint = 0;
 
-        Account sourceAccount = accountRepository.selectById(source);
-        Account targetAccount = accountRepository.selectById(target);
+        TradeResult out = null;
+        TradeResult in = null;
+        try {
+            Integer aout2= accountRepository.out2(source,point);
 
-//        Integer map =accountRepository.out2(source,point);
-        HashMap<String,Object> a2 = accountRepository.aout2();
+            out = new TradeResult();
+            in = new TradeResult();
+            if(aout2>0){
+                out = accountRepository.out();
+                Integer in2 = accountRepository.in2(target,point);
+                if(in2>0){
+                    in = accountRepository.out();
+                }else{
+                    throw new Exception();
+                }
 
-//        this.transfer(source,target,point);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         return new AccountTransferResult(
                 point
-                , new AccountTransfer(source, sourceBeforePoint, sourceAfterPoint)
-                , new AccountTransfer(target, targetBeforePoint, targetAfterPoint)
+                , new AccountTransfer(source, out.getPoint(), out.getAfterPoint())
+                , new AccountTransfer(target, in.getPoint(),in.getAfterPoint())
         );
     }
 

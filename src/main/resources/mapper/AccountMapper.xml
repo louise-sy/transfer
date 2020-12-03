@@ -5,17 +5,24 @@
 
 
 
-<!--    <update id="out2" >-->
-<!--        UPDATE account SET point = @point:=point , point = @afterPoint := point-#{point}-->
-<!--        where id = #{id} and point-#{point} > 0;-->
+    <resultMap id="myUserResultMap"  type="com.example.transfer.data.mapper.TradeResult">
+        <result column="point" property="point"/>
+        <result column="afterPoint" property="afterPoint"/>
+    </resultMap>
 
-<!--    </update>-->
-
-    <select id="aout2" resultType="java.util.HashMap">
+    <update id="out2" >
         UPDATE account SET point = @afterPoint := (@point:=point)-#{point}
         where id = #{id} and (@point:=@afterPoint:=point)>=#{point};
-        select @point, @afterPoint;
+
+    </update>
+
+    <select id="out" resultMap="myUserResultMap">
+        select @point as point, @afterPoint as afterPoint;
     </select>
 
+    <update id="in2" >
+        UPDATE account SET point = @afterPoint := (@point:=point)+#{point}
+        where id = #{id}
+    </update>
 
 </mapper>

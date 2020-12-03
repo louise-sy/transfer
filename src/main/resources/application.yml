@@ -8,7 +8,7 @@ spring:
     schema: classpath:db/schema-h2.sql
     username: sa
     password: 123456
-    maximumPoolSize: 0
+    maximumPoolSize: 1
 
 #  jpa:
 #    show-sql: false
@@ -25,5 +25,5 @@ spring:
         web-admin-password: 123456
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

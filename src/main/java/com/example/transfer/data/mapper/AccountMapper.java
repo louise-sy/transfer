@@ -25,4 +25,11 @@ public interface AccountMapper extends BaseMapper<Account> {
 
 //    Integer out2(@Param("id")Integer id, @Param("point")Integer point);
 
+    Integer out2(@Param("id")Integer id, @Param("point")Integer point);
+
+    TradeResult out();
+
+    Integer in2(@Param("id")Integer id, @Param("point")Integer point);
+
+
 }
