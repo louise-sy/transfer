@@ -31,5 +31,4 @@ public interface AccountMapper extends BaseMapper<Account> {
 
     Integer in2(@Param("id")Integer id, @Param("point")Integer point);
 
-
 }
