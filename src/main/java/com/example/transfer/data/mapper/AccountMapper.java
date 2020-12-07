@@ -14,13 +14,13 @@ import java.util.List;
 @Mapper
 public interface AccountMapper extends BaseMapper<Account> {
 
-    @Select("select point from Account where id= #{id}")
+    @Select("select point from account where id= #{id}")
     Integer findPoint(@Param("id") Integer id);
 
-    @Update("update Account set point = point-#{point} where id=#{id} and point>=#{point}")
+    @Update("update account set point = point-#{point} where id=#{id} and point>=#{point}")
     Integer outPoint(@Param("id")Integer id, @Param("point")Integer point);
 
-    @Update("update Account set point = point+#{point} where id=#{id}")
+    @Update("update account set point = point+#{point} where id=#{id}")
     Integer inPoint(@Param("id")Integer id, @Param("point")Integer point);
 
 //    Integer out2(@Param("id")Integer id, @Param("point")Integer point);

@@ -5,6 +5,7 @@ import com.example.transfer.data.mapper.AccountMapper;
 import com.example.transfer.data.mapper.TradeResult;
 import com.example.transfer.vo.AccountTransfer;
 import com.example.transfer.vo.AccountTransferResult;
+import lombok.Synchronized;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +41,6 @@ public class AccountService {
             accountRepository.outPoint(sourceAccount.getId(), point);
         }
     }
-
 
     public AccountTransferResult transfer2(
             Integer source

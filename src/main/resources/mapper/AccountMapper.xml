@@ -3,8 +3,6 @@
 
 <mapper namespace="com.example.transfer.data.mapper.AccountMapper">
 
-
-
     <resultMap id="myUserResultMap"  type="com.example.transfer.data.mapper.TradeResult">
         <result column="point" property="point"/>
         <result column="afterPoint" property="afterPoint"/>
@@ -22,6 +20,6 @@
 
     <update id="in2" >
         UPDATE account SET point = @afterPoint := (@point:=point)+#{point}
-        where id = #{id}
+        where id = #{id} ;
     </update>
 </mapper>

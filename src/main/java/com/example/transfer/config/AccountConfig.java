@@ -17,7 +17,7 @@ public class AccountConfig extends ServiceImpl<AccountMapper,Account> {
         List<Account> accounts = new ArrayList<>();
 
         for (int i = 1; i <= AccountCount; i++) {
-            accounts.add(new Account(i, DefaultPoint,0l));
+            accounts.add(new Account(i, DefaultPoint));
         }
         this.saveBatch(accounts);
     }

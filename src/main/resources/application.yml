@@ -1,28 +1,31 @@
 spring:
   datasource:
     #url: jdbc:h2:file:./temp/data/h2;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MYSQL
+    #url: jdbc:h2:mem:test
+#    driverClassName: org.h2.Driver
+#    schema: classpath:db/schema-h2.sql
+#    username: sa
+#    password: 123456
 
-
-    url: jdbc:h2:mem:test
-    driverClassName: org.h2.Driver
-    schema: classpath:db/schema-h2.sql
-    username: sa
+    url: jdbc:mysql://192.168.3.106:3306/demo?userSSL=false&useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT&rewriteBatchedStatements=true&allowMultiQueries=true
+    username: root
     password: 123456
-    maximumPoolSize: 1
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 5
 
-#  jpa:
-#    show-sql: false
-#    database-platform: org.hibernate.dialect.H2Dialect
-#    hibernate:
-#      ddl-auto: create
-#      format_sql: false
-  h2:
-    console:
-      enabled: true
-      path: /h2
-      settings:
-        web-allow-others: true
-        web-admin-password: 123456
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+      format_sql: false
+#  h2:
+#    console:
+#      enabled: true
+#      path: /h2
+#      settings:
+#        web-allow-others: true
+#        web-admin-password: 123456
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
 #  configuration:
