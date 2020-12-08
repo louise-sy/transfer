@@ -7,7 +7,7 @@ spring:
 #    username: sa
 #    password: 123456
 
-    url: jdbc:mysql://192.168.3.106:3306/demo?userSSL=false&useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT&rewriteBatchedStatements=true&allowMultiQueries=true
+    url: jdbc:mysql://localhost:3306/demo?userSSL=false&useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT&rewriteBatchedStatements=true&allowMultiQueries=true
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver

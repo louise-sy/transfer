@@ -5,13 +5,13 @@ import com.example.transfer.data.mapper.AccountMapper;
 import com.example.transfer.data.mapper.TradeResult;
 import com.example.transfer.vo.AccountTransfer;
 import com.example.transfer.vo.AccountTransferResult;
-import lombok.Synchronized;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 @Service
@@ -41,6 +41,55 @@ public class AccountService {
             accountRepository.outPoint(sourceAccount.getId(), point);
         }
     }
+
+    @Transactional
+    public void transfer2All(Integer source
+            , Integer target
+            , Integer point) {
+
+
+    }
+
+
+    public Result transferA(Integer source, Integer point) {
+
+        Integer aout2 = accountRepository.out2(source, point);
+
+        TradeResult out = accountRepository.out();
+
+        return new Result(aout2, out);
+    }
+
+    public AccountTransferResult transferB(Result result, Integer target, Integer point, Integer source) {
+
+        TradeResult in = null;
+        TradeResult out = result.getTradeResult();
+        if (result.getUpdate() > 0) {
+
+            Integer in2 = accountRepository.in2(target, point);
+            if (in2 > 0) {
+                in = accountRepository.out();
+            }
+
+        } else {
+
+            Integer targetPoint = accountRepository.findPoint(target);
+            return new AccountTransferResult(
+                    0
+                    , new AccountTransfer(source, out.getPoint(), out.getAfterPoint())
+                    , new AccountTransfer(target, targetPoint, targetPoint)
+            );
+        }
+
+        return new AccountTransferResult(
+                point
+                , new AccountTransfer(source, out.getPoint(), out.getAfterPoint())
+                , new AccountTransfer(target, in.getPoint(), in.getAfterPoint())
+        );
+
+
+    }
+
 
     public AccountTransferResult transfer2(
             Integer source
@@ -81,5 +130,12 @@ public class AccountService {
         );
     }
 
+
+    @Data
+    @AllArgsConstructor
+    public class Result {
+        private Integer update;
+        private TradeResult tradeResult;
+    }
 
 }
