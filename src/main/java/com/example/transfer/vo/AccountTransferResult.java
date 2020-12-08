@@ -8,10 +8,12 @@ import lombok.ToString;
 @Getter
 @AllArgsConstructor
 public class AccountTransferResult {
+
+    private final Boolean status;
     // 交易點數
-    private Integer point;
+    private final Integer point;
     // 轉出
-    private AccountTransfer source;
+    private final AccountTransfer source;
     // 轉入
-    private AccountTransfer target;
+    private final AccountTransfer target;
 }

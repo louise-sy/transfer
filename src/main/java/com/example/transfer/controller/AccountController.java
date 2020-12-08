@@ -4,7 +4,6 @@ import com.example.transfer.config.AccountConfig;
 import com.example.transfer.data.entity.Account;
 import com.example.transfer.result.AllResult;
 import com.example.transfer.service.AccountService;
-import com.example.transfer.vo.AccountTransfer;
 import com.example.transfer.vo.AccountTransferResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,7 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @Api(tags = "帳戶")
 @RestController
@@ -151,16 +153,12 @@ public class AccountController {
                             , random.nextInt(AccountConfig.AccountCount) + 1
                             , random.nextInt(max) + minPoint
                     );
-//                    if (!Objects.equals(result.getSource().getBefore() - result.getPoint(), result.getSource().getAfter())
-//                            || !Objects.equals(result.getTarget().getBefore() + result.getPoint(), result.getTarget().getAfter())
-//                    ) {
-//                        System.out.println("-------------------");
-//                        System.out.println(result.getSource().getBefore() - result.getPoint());
-//                        System.out.println(result.getSource().getAfter());
-//                        System.out.println(result.getTarget().getBefore() + result.getPoint());
-//                        System.out.println(result.getTarget().getAfter());
-//                        throw new RuntimeException(String.format("交易結果異常：%s", result));
-//                    }
+                    if (result.getStatus()
+                            && !(Objects.equals(result.getSource().getBefore() - result.getPoint(), result.getSource().getAfter())
+                            && Objects.equals(result.getTarget().getBefore() + result.getPoint(), result.getTarget().getAfter()))
+                    ) {
+                        throw new RuntimeException(String.format("交易結果異常：%s", result));
+                    }
                 }
                 return count;
             });
@@ -194,6 +192,5 @@ public class AccountController {
                 , detail.toString()
         );
     }
-
-
 }
+

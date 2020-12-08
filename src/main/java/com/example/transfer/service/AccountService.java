@@ -23,6 +23,7 @@ public class AccountService {
         return accountRepository.selectList(null);
     }
 
+    private final Integer count = 0;
 
     /**
      * @param source 轉出
@@ -42,12 +43,17 @@ public class AccountService {
         }
     }
 
-    @Transactional
-    public void transfer2All(Integer source
+    @Transactional(rollbackFor = Exception.class)
+    public AccountTransferResult transfer2(Integer source
             , Integer target
             , Integer point) {
-
-
+        try {
+            Result result = transferA(source, point);
+            return transferB(result, target, point, source);
+        } catch (Exception e) {
+//            e.printStackTrace();
+        }
+        return new AccountTransferResult(false, 0, new AccountTransfer(0, 0, 0), new AccountTransfer(0, 0, 0));
     }
 
 
@@ -74,14 +80,14 @@ public class AccountService {
         } else {
 
             Integer targetPoint = accountRepository.findPoint(target);
-            return new AccountTransferResult(
+            return new AccountTransferResult(false,
                     0
                     , new AccountTransfer(source, out.getPoint(), out.getAfterPoint())
                     , new AccountTransfer(target, targetPoint, targetPoint)
             );
         }
 
-        return new AccountTransferResult(
+        return new AccountTransferResult(true,
                 point
                 , new AccountTransfer(source, out.getPoint(), out.getAfterPoint())
                 , new AccountTransfer(target, in.getPoint(), in.getAfterPoint())
@@ -91,44 +97,47 @@ public class AccountService {
     }
 
 
-    public AccountTransferResult transfer2(
-            Integer source
-            , Integer target
-            , Integer point
-    ) {
-        int sourceBeforePoint = 0, sourceAfterPoint = 0, targetBeforePoint = 0, targetAfterPoint = 0;
-
-        TradeResult out = null;
-        TradeResult in = null;
-        Integer targetPoint = 0;
-        Integer aout2 = accountRepository.out2(source, point);
-
-        out = new TradeResult();
-        in = new TradeResult();
-        if (aout2 > 0) {
-            out = accountRepository.out();
-            Integer in2 = accountRepository.in2(target, point);
-            if (in2 > 0) {
-                in = accountRepository.out();
-            }
-
-        } else {
-            out = accountRepository.out();
-            targetPoint = accountRepository.findPoint(target);
-            return new AccountTransferResult(
-                    0
-                    , new AccountTransfer(source, out.getPoint(), out.getAfterPoint())
-                    , new AccountTransfer(target, targetPoint, targetPoint)
-            );
-        }
-
-
-        return new AccountTransferResult(
-                point
-                , new AccountTransfer(source, out.getPoint(), out.getAfterPoint())
-                , new AccountTransfer(target, in.getPoint(), in.getAfterPoint())
-        );
-    }
+//    public AccountTransferResult transfer2(
+//            Integer source
+//            , Integer target
+//            , Integer point
+//    ) {
+//        int sourceBeforePoint = 0, sourceAfterPoint = 0, targetBeforePoint = 0, targetAfterPoint = 0;
+//
+//        TradeResult out = null;
+//        TradeResult in = null;
+//        Integer targetPoint = 0;
+//        Integer aout2 = accountRepository.out2(source, point);
+//
+//        out = new TradeResult();
+//        in = new TradeResult();
+//        if (aout2 > 0) {
+//            out = accountRepository.out();
+//            Integer in2 = accountRepository.in2(target, point);
+//            if (in2 > 0) {
+//                in = accountRepository.out();
+//            }
+//
+//        } else {
+//            out = accountRepository.out();
+//            targetPoint = accountRepository.findPoint(target);
+//            count++;
+//            System.out.println(count);
+//            return new AccountTransferResult(false,
+//                    0
+//                    , new AccountTransfer(0, 0, 0)
+//                    , new AccountTransfer(0, 0, 0)
+//            );
+//
+//        }
+//
+//
+//        return new AccountTransferResult(true,
+//                point
+//                , new AccountTransfer(source, out.getPoint(), out.getAfterPoint())
+//                , new AccountTransfer(target, in.getPoint(), in.getAfterPoint())
+//        );
+//    }
 
 
     @Data
