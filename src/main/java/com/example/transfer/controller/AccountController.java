@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -153,12 +152,12 @@ public class AccountController {
                             , random.nextInt(AccountConfig.AccountCount) + 1
                             , random.nextInt(max) + minPoint
                     );
-                    if (result.getStatus()
-                            && !(Objects.equals(result.getSource().getBefore() - result.getPoint(), result.getSource().getAfter())
-                            && Objects.equals(result.getTarget().getBefore() + result.getPoint(), result.getTarget().getAfter()))
-                    ) {
-                        throw new RuntimeException(String.format("交易結果異常：%s", result));
-                    }
+//                    if (result.getStatus()
+//                            && !(Objects.equals(result.getSource().getBefore() - result.getPoint(), result.getSource().getAfter())
+//                            && Objects.equals(result.getTarget().getBefore() + result.getPoint(), result.getTarget().getAfter()))
+//                    ) {
+//                        throw new RuntimeException(String.format("交易結果異常：%s", result));
+//                    }
                 }
                 return count;
             });

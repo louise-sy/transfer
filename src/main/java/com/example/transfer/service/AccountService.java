@@ -43,7 +43,6 @@ public class AccountService {
         }
     }
 
-    @Transactional(rollbackFor = Exception.class)
     public AccountTransferResult transfer2(Integer source
             , Integer target
             , Integer point) {
@@ -57,6 +56,7 @@ public class AccountService {
     }
 
 
+    @Transactional
     public Result transferA(Integer source, Integer point) {
 
         Integer aout2 = accountRepository.out2(source, point);
@@ -66,6 +66,7 @@ public class AccountService {
         return new Result(aout2, out);
     }
 
+    @Transactional
     public AccountTransferResult transferB(Result result, Integer target, Integer point, Integer source) {
 
         TradeResult in = null;
